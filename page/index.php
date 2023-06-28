@@ -5,97 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bookstore Web App</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     
-    <style>
-    body {
-    font-family: Montserrat, sans-serif;
-    margin: 0;
-    padding: 0;
-    }
-
-    .sidebar {
-      background-color: #1374cf;
-      color: #ffffff;
-      height: 100vh;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      width: 200px;
-      position: fixed;
-      top: 0;
-      left: 0;
-    }
-
-    .sidebar ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar ul li {
-      margin-bottom: 30px;
-    }
-
-    @media (max-width: 400px) {
-      .sidebar {
-        width: 100%;
-      }
-    }
-
-    .sidebar ul li:hover {
-      background-color: #fff;
-    }
-
-    .sidebar ul li:hover a {
-      color: #1374cf;
-      border-radius: 10px;
-    }
-
-    .sidebar ul li a {
-      color: #fff;
-      text-decoration: none;
-      display: block;
-      padding: 10px 20px;
-      margin:;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar ul li a:hover {
-      color: #fff;
-      color: #79a7d1;
-      display: block;
-      width: 100%;
-      border-radius: 10px;
-    }
-
-    .content {
-      padding: 20px;
-      margin-left: 200px;
-    }
-
-    .centered-bold {
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .centered-table {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .scrollable-table {
-        max-height: 700px;
-        overflow-y: scroll;
-      }
-
-    .details-button {
-      padding: 10px 50px; 
-      margin: 10px;
-    }
-  
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../style.css" />
 
     <?php
       $host = 'localhost';  
@@ -116,12 +28,13 @@
           $releaseYear = intval($_POST['releaseYear']);
           $pages = intval($_POST['pages']);
           $stock = intval($_POST['stock']);
+          $price = intval($_POST['price']);
           $genreId = intval($_POST['genreId']);
           $languageId = intval($_POST['languageId']);
           $publisherId = intval($_POST['publisherId']);
           $authorId = intval($_POST['authorId']);
       
-          $query = "INSERT INTO bookstore.book (Book_Name, Release_Year, Pages, Stock, Genre_ID, Language_ID, Publisher_ID, Author_ID) VALUES ('$bookName', $releaseYear, $pages, $stock, $genreId, $languageId, $publisherId, $authorId)";
+          $query = "INSERT INTO bookstore.book (Book_Name, Release_Year, Pages, Stock, Price, Genre_ID, Language_ID, Publisher_ID, Author_ID) VALUES ('$bookName', $releaseYear, $pages, $stock,$price, $genreId, $languageId, $publisherId, $authorId)";
       
           $result = pg_query($cn, $query);
       
@@ -214,9 +127,95 @@
                       echo "<script>alert('Error deleting book: " . pg_last_error($cn) . "');</script>";
                   }
               }
+              if (isset($_POST['editBook'])) {
+                $selectedBook = postgreQuery('SELECT * FROM bookstore."book" WHERE book_id = '.$_GET['selected_id'])[0];
+                $selectedGenre = postgreQuery('SELECT * FROM bookstore."genre" WHERE genre_id = '.$selectedBook['genre_id'])[0];
+                $selectedLanguage = postgreQuery('SELECT * FROM bookstore."language" WHERE language_id = '.$selectedBook['language_id'])[0];
+                $selectedPublisher = postgreQuery('SELECT * FROM bookstore."publisher" WHERE publisher_id = '.$selectedBook['publisher_id'])[0];
+                $selectedAuthor = postgreQuery('SELECT * FROM bookstore."author" WHERE author_id = '.$selectedBook['author_id'])[0];
+              ?>
+                <form action="" method="POST">
+                  <h2>Edit Book</h2>
+                  <div class="form-group">
+                    <label for="bookName">Book Name:</label>
+                    <input type="text" class="form-control" id="bookName" name="bookName" value="<?= $selectedBook['book_name'] ?>" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="releaseYear">Release Year:</label>
+                    <input type="text" class="form-control" id="releaseYear" name="releaseYear" value="<?= $selectedBook['release_year'] ?>" required>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="pages">Pages:</label>
+                    <input type="text" class="form-control" id="pages" name="pages" value="<?= $selectedBook['pages'] ?>" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="text" class="form-control" id="stock" name="stock" value="<?= $selectedBook['stock'] ?>" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="text" class="form-control" id="price" name="price" value="<?= $selectedBook['price'] ?>" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="genre">Genre:</label>
+                    <input type="text" class="form-control" id="genre" name="genre" value="<?= $selectedGenre['genre_id'] ?>" required> '
+                  </div>
+
+                  <div class="form-group">
+                    <label for="language">Language:</label>
+                    <input type="text" class="form-control" id="language" name="language" value="<?= $selectedLanguage['language_id'] ?>" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="publisher">Publisher:</label>
+                    <input type="text" class="form-control" id="publisher" name="publisher" value="<?= $selectedPublisher['publisher_id'] ?>" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="author">Author:</label>
+                    <input type="text" class="form-control" id="author" name="author" value="<?= $selectedAuthor['author_id'] ?>" required>
+                  </div>
+
+                  <input type="submit" class="btn btn-primary details-button" name="updateBook" value="Update Book">
+                  <input type="button" id="cancelEditButton" class="btn btn-danger details-button" value="Cancel">
+                </form>
+              <?php
+              }
+              if (isset($_POST['updateBook'])) {
+                $bookId = intval($_GET['selected_id']);
+                $bookName = pg_escape_string($_POST['bookName']);
+                $releaseYear = intval($_POST['releaseYear']);
+                $pages = intval($_POST['pages']);
+                $stock = intval($_POST['stock']);
+                $price = intval($_POST['price']);
+                $genreId = intval($_POST['genre']);
+                $languageId = intval($_POST['language']);
+                $publisherId = intval($_POST['publisher']);
+                $authorId = intval($_POST['author']);
+                
+                
+                $updateQuery = "UPDATE bookstore.book SET book_name='$bookName', release_year='$releaseYear', pages = '$pages', stock='$stock', price='$price', genre_id='$genreId', language_id='$languageId', publisher_id='$publisherId', author_id='$authorId' WHERE book_id=$bookId";
+                // Create the update query using the variables for other input fields
+              
+                $updateResult = pg_query($cn, $updateQuery);
+              
+                if ($updateResult) {
+                  echo "<script>alert('Book updated successfully.');</script>";
+                  // Redirect back to the main page
+                  echo "<script>window.location.href='index.php';</script>";
+                } else {
+                  echo "<script>alert('Error updating book: " . pg_last_error($cn) . "');</script>";
+                }
+              }
           ?>
           <table class="table mt-3 table-bordered centered-table">
             <tbody>
+              <input type="button" class="btn btn-white" value="Cancel" onclick="goBack()">
               <h2>Book Details</h2>
               <tr>
                 <th>Book Title</th>
@@ -259,49 +258,88 @@
           <form action="" method="POST">
               <input type="hidden" name="selected_id" value="<?= $_GET['selected_id'] ?>">
               <input type="submit" class="btn btn-danger details-button" name="deleteBook" value="Delete Book">
+              <input type="submit" class="btn btn-primary details-button" name="editBook" value="Edit Book">
           </form>
         <?php endif; ?>    
-
+        <button id="addBookButton" type="button" class="btn btn-primary details-button" onclick="showAddBookForm()">Add Book</button>
       </div>
     </div>
-    <div class="col-5 content">
-        <h2>Add Book</h2>
-        <form action="" method="POST">
-            <div class="form-group">
-                <label for="bookName">Book Name:</label>
-                <input type="text" class="form-control" id="bookName" name="bookName" required>
-            </div>
-            <div class="form-group">
-                <label for="releaseYear">Release Year:</label>
-                <input type="number" class="form-control" id="releaseYear" name="releaseYear" required>
-            </div>
-            <div class="form-group">
-                <label for="pages">Pages:</label>
-                <input type="number" class="form-control" id="pages" name="pages" required>
-            </div>
-            <div class="form-group">
-                <label for="stock">Stock:</label>
-                <input type="number" class="form-control" id="stock" name="stock" required>
-            </div>
-            <div class="form-group">
-                <label for="genreId">Genre ID:</label>
-                <input type="number" class="form-control" id="genreId" name="genreId" required>
-            </div>
-            <div class="form-group">
-                <label for="languageId">Language ID:</label>
-                <input type="number" class="form-control" id="languageId" name="languageId" required>
-            </div>
-            <div class="form-group">
-                <label for="publisherId">Publisher ID:</label>
-                <input type="number" class="form-control" id="publisherId" name="publisherId" required>
-            </div>
-            <div class="form-group">
-                <label for="authorId">Author ID:</label>
-                <input type="number" class="form-control" id="authorId" name="authorId" required>
-            </div>
-            <input type="submit" class="btn btn-primary details-button" name="Send_AddBook" value="Add Book">
-        </form>
+    <div id="addBookForm" style="display: none;">
+      <div class="col-5 content">
+          <h2>Add Book</h2>
+          <form action="" method="POST">
+              <div class="form-group">
+                  <label for="bookName">Book Name:</label>
+                  <input type="text" class="form-control" id="bookName" name="bookName" required>
+              </div>
+              <div class="form-group">
+                  <label for="releaseYear">Release Year:</label>
+                  <input type="number" class="form-control" id="releaseYear" name="releaseYear" required>
+              </div>
+              <div class="form-group">
+                  <label for="pages">Pages:</label>
+                  <input type="number" class="form-control" id="pages" name="pages" required>
+              </div>
+              <div class="form-group">
+                  <label for="stock">Stock:</label>
+                  <input type="number" class="form-control" id="stock" name="stock" required>
+              </div>
+              <div class="form-group">
+                  <label for="price">Price:</label>
+                  <input type="number" class="form-control" id="price" name="price" required>
+              </div>
+              <div class="form-group">
+                  <label for="genreId">Genre ID:</label>
+                  <input type="number" class="form-control" id="genreId" name="genreId" required>
+              </div>
+              <div class="form-group">
+                  <label for="languageId">Language ID:</label>
+                  <input type="number" class="form-control" id="languageId" name="languageId" required>
+              </div>
+              <div class="form-group">
+                  <label for="publisherId">Publisher ID:</label>
+                  <input type="number" class="form-control" id="publisherId" name="publisherId" required>
+              </div>
+              <div class="form-group">
+                  <label for="authorId">Author ID:</label>
+                  <input type="number" class="form-control" id="authorId" name="authorId" required>
+              </div>
+              <input type="submit" class="btn btn-primary details-button" name="Send_AddBook" value="Add Book">
+              <input type="button" id="cancelButton" class="btn btn-danger details-button" value="Cancel" onclick="hideAddBookForm()">
+          </form>
+      </div>
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // Fungsi untuk menampilkan form "Add Book"
+      function showAddBookForm() {
+        var addBookForm = document.getElementById("addBookForm");
+        var addBookButton = document.getElementById("addBookButton");
+        addBookForm.style.display = "block";
+        addBookButton.style.display = "none";
+      }
+      // Fungsi untuk menyembunyikan form "Add Book" dan menampilkan tombol "Add Book"
+      function hideAddBookForm() {
+        var addBookForm = document.getElementById("addBookForm");
+        var addBookButton = document.getElementById("addBookButton");
+        addBookForm.style.display = "none";
+        addBookButton.style.display = "block";
+      }
+
+      document.getElementById("cancelEditButton").addEventListener("click", function() {
+        window.location.href = 'index.php';
+      });
+
+      var cancelButton = document.getElementById("cancelButton");
+      cancelButton.addEventListener("click", hideAddBookForm);
+      
+      var cancelEditButton = document.getElementById("cancelEditButton");
+      cancelEditButton.addEventListener("click", hideAddBookForm);
+
+      function goBack() {
+        window.location.href = "../index.html";
+      }
+  
+    </script>
   </body>
 </html>

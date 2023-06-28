@@ -1,0 +1,85 @@
+body {
+  font-family: Montserrat, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar {
+  background-color: #1374cf;
+  color: #ffffff;
+  height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 200px;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 30px;
+}
+
+@media (max-width: 400px) {
+  .sidebar {
+    width: 100%;
+  }
+}
+
+.sidebar ul li:hover {
+  background-color: #fff;
+}
+
+.sidebar ul li:hover a {
+  color: #1374cf;
+  border-radius: 10px;
+}
+
+.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+  color: #fff;
+  color: #79a7d1;
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.content {
+  padding: 20px;
+  margin-left: 200px;
+}
+
+.centered-bold {
+  text-align: center;
+  font-weight: bold;
+}
+
+.centered-table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.scrollable-table {
+  max-height: 700px;
+  overflow-y: scroll;
+}
+
+.details-button {
+  padding: 10px 50px;
+  margin: 10px;
+}
